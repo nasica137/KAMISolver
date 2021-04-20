@@ -22,6 +22,7 @@ Possible algorithm arguments:
   - iddfs
   - astar1
   - astar2
+
 Possible optimization arguments:
   - normal
   - dd1
