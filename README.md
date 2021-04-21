@@ -14,7 +14,7 @@ To install,
 The proper way to use the network is by invoking the grid-Kami.py script with:
 
 ```bash
-grid-Kami.py [algorithm] [optimization]
+python3.6 grid-Kami.py [algorithm] [optimization]
 ```
 
 Possible algorithm arguments:
