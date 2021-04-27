@@ -5,16 +5,30 @@ An implementation and empirical evaluation of pathfinding algorithms such as BFS
 The goal is to find an algorithm that is suitable for solving the game KAMI in a reasonable amount of time.
 
 
-## Installation
-
-To install,
-
 ## Usage
 
-The proper way to use the network is by invoking the grid-Kami.py script with:
+The proper way to run the solvers is by going into the desired dataset directory with:
 
 ```bash
-python3.6 grid-Kami.py [algorithm] [optimization]
+cd PROBLEM50-dataset/
+```
+
+or
+
+```bash
+cd PROBLEM16-dataset/
+```
+
+or 
+
+```bash
+cd PROBLEM22-dataset/
+```
+
+and then invoking the grid-kami.py script with:
+
+```bash
+python3.6 grid-kami.py [algorithm] [optimization]
 ```
 
 Possible algorithm arguments:
