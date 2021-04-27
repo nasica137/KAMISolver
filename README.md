@@ -25,7 +25,7 @@ or
 cd PROBLEM22-dataset/
 ```
 
-and then invoking the grid-kami.py script with:
+and then invoking the grid-kami.py script with python3.6 or later:
 
 ```bash
 python3.6 grid-kami.py [algorithm] [optimization]
