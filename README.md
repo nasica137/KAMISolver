@@ -1,8 +1,8 @@
 # KAMISolver
 
-An implementation and empirical evaluation of pathfinding algorithms such as BFS, IDDFS, ASTAR with an admissible heurstic and a custom heuristic which is not optimal. Additionally, a selection of optimizations are implemented and applied to each algorithm. The evaluation is carried out by comparing performance metrics such as optimality, optimality rate, run time and node expansions. This project is a part of my bachelor's thesis at the Albert-Ludwigs-Universität Freiburg.
+An implementation and empirical evaluation of pathfinding algorithms such as BFS, IDDFS, ASTAR with an admissible heurstic and a self-made custom heuristic which is not optimal. Additionally, a selection of optimizations are implemented and applied to each algorithm. The evaluation is carried out by comparing performance metrics such as optimality, optimality rate, run time and node expansions. This project is a part of my bachelor's thesis at the Albert-Ludwigs-Universität Freiburg.
 
-The goal is to find an algorithm that is suitable for solving the game KAMI in a reasonable amount of time.
+The goal is to find an algorithm that is suitable for optimally solving the game KAMI in a reasonable amount of time.
 
 
 ## Usage
