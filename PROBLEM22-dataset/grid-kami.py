@@ -1,4 +1,3 @@
-import os
 import csv
 import sys
 import copy
@@ -21,8 +20,6 @@ class grid:
     def __init__(self, problem_file_name, optimization):
         self.duplicate_dictionary = {}
         self.duplicate_list = []
-        self.shortest_length = 0
-        self.i = 0
         self.iterationcount = 0
         self.problem_file_name = problem_file_name
         self.componentsList = []
@@ -40,7 +37,6 @@ class grid:
         # Make a grid...
         self.nrows = total_lines
         self.ncols = total_characters
-        #self.image = [[[] for i in range(self.ncols)] for j in range(self.nrows)]
         self.image = np.zeros([self.nrows, self.ncols])
         count_lines = 0
         count_characters = 0
@@ -48,9 +44,7 @@ class grid:
         # Set every cell to a number (this would be your data)
         with open(self.problem_file_name, 'r') as f:
             for line in f:
-                #print("line:", count_lines, line)
                 for letter in line.strip():
-                    #print("character: ", count_characters, letter)
                     if letter == 'B':
                         self.image[count_lines][count_characters] = 0
                     elif letter == 'Y':
@@ -74,7 +68,6 @@ class grid:
         plt.matshow(self.image)
         plt.xticks(range(self.ncols), col_labels)
         plt.yticks(range(self.nrows), row_labels)
-        #plt.draw()
         plt.show(block=False)
         plt.pause(0.5)
         plt.close("all")
@@ -127,7 +120,6 @@ class grid:
 
     def change_color(self, newColor, row, col):
         print("change : ", str(row) + "x" + str(col), " to ", newColor)
-        #self.totalBoxes = 1
         oldColor = self.image[row][col]
         if oldColor == newColor:
             return
@@ -147,7 +139,7 @@ class grid:
                     if button not in reachableNodes:
                         reachableNodes.append(button)
                         self.image[row_][col_] = newColor
-            
+
             if len(reachableNodes) < 1:
                 break
             
@@ -176,16 +168,12 @@ class grid:
                 row_, col_ = button.split("x")
                 row_ = int(row_)
                 col_ = int(col_)
-                
                 if button not in visited and image[row_][col_] == color:
                     visited.append(button)
                     queue.append(button)
-                    #print("appending:   ", button)
                     self.totalBoxes += 1
                     image[row_][col_] = -1
-                    
         self.componentsList.append([visited, color])
-        #print("componentslist: ", len(self.componentsList), self.componentsList)
 
     def getComponents(self):
         image = copy.deepcopy(self.image)
@@ -195,14 +183,11 @@ class grid:
             for col in range(self.ncols):
                 if image[row][col] != -1:
                     self.checkConnectedColors(image, row, col)
-        #print(self.getGrid())
-        #self.reset()
         return self.componentsList
 
     def getConComponents(self):
         
         dic = defaultdict(list)
-        #dicColor = dict()
         dicComponent = dict()
         lst = self.getComponents()
         for combo1, combo2 in combinations(lst,2):
@@ -214,33 +199,21 @@ class grid:
             dicComponent[index1] = [component1, color1]
             dicComponent[index2] = [component2, color2]
             
-            #print(index1, index2)
             for button in component1:
                 row_, col_ = button.split("x")
                 row_ = int(row_)
                 col_ = int(col_)
                 listNeighborButton = self.getNeighborGraph(str(row_) + "x" + str(col_))
-                #print(tilei, "\n", listButtoni)
                 for i in listNeighborButton:
                     if i in component2:
                         dic[index1].append(index2)
                         dic[index1] = list(set(dic[index1]))
                         dic[index2].append(index1)
-                        dic[index2] = list(set(dic[index2]))
-                        #dicColor[index1] = color1
-                        #dicColor[index2] = color2             
-            
-            
-        #print(dic, "\n", dicComponent)
+                        dic[index2] = list(set(dic[index2]))                  
         return [dic, dicComponent]
-
-
-
-
 
         
     def changeColorOfComponentGraph(self, dictionary, dicComp, component, color):
-        #dic, dicComponent = self.getConComponents()
         dic = dictionary
         dicComponent = dicComp
         dicComponent[component][1] = color
@@ -355,13 +328,11 @@ class grid:
                             self.iterationcount += 1
                             dic = copy.deepcopy(node.dic)
                             dicComponent = copy.deepcopy(node.dicComponent)
-                            #print(dic, dicComponent)
                             newDic, newDicComponent = self.changeColorOfComponentGraph(dic, dicComponent, component, color)
                             lst.append([newDic, newDicComponent, dicComponent[component][0], color, self.iterationcount])
                         elif optimization == "dd1":
                             dic = copy.deepcopy(node.dic)
                             dicComponent = copy.deepcopy(node.dicComponent)
-                            #print(dic, dicComponent)
                             newDic, newDicComponent = self.changeColorOfComponentGraph(dic, dicComponent, component, color)
                             newMatrix = create_matrix_for_DD(newDic, newDicComponent)
                             if newMatrix.tostring() not in self.duplicate_dictionary:
@@ -380,7 +351,6 @@ class grid:
                         elif optimization == "ssr-dd1":
                             dic = copy.deepcopy(node.dic)
                             dicComponent = copy.deepcopy(node.dicComponent)
-                            #print(dic, dicComponent)
                             newDic, newDicComponent = self.changeColorOfComponentGraph(dic, dicComponent, component, color)
                             newMatrix = create_matrix_for_DD(newDic, newDicComponent)
                             if newMatrix.tostring() not in self.duplicate_dictionary and len(newDic) < len(dic):
@@ -423,7 +393,6 @@ class grid:
                              
                                 lst.append([newDic, newDicComponent, dicComponent[component][0], color, self.iterationcount])
 
-
             nodeList = []
             for i in lst:
                 newNodeID = node.id + "." + str(i[4])
@@ -435,7 +404,6 @@ class grid:
 def create_matrix_for_DD(dic, dicComponent):
     colorsA = dicComponent
     matrixA = np.zeros([len(dic.keys()), len(dic.values())])
-    
     
     for i,k in enumerate(dic.keys()):
         for j, kk in enumerate(dic.values()):
@@ -527,9 +495,6 @@ def hComponents(dic, dicComponent):
                     return totalColors - 1
 
         return len(dic) - 1
-    
-
- 
 
 
 def hColors(dic, dicComponent):
@@ -552,11 +517,7 @@ def hColors(dic, dicComponent):
             yellowValue = 1
             totalYellow += 1
 
-    #print("total colors: ", blueValue, redValue, yellowValue)
-    #print(dic)
-    #print(dicComponent, "\n")
     totalColors = blueValue + redValue + yellowValue
-    #print("heuristic: ", totalColors -1)
     return int(totalColors - 1)
 
 
@@ -567,7 +528,7 @@ def add_to_open(open_list, neighbor):
             return False
     return True
 
-
+@timeout()
 def astar1(root, g):
     open_list = [root]
     closed_list = []
@@ -575,9 +536,7 @@ def astar1(root, g):
     expansion = 0
     while len(open_list) > 0:
         open_list.sort()
-        #print("sorted list: ", [n.f for n in open_list])
         node = open_list.pop(0)
-        
         
         closed_list.append(node)
         pathDict[node.id] = node.history
@@ -587,7 +546,7 @@ def astar1(root, g):
             print("found solution node! ", node.id, node.history)
             break;
             
-        print("expanding a noooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooode!!!")
+        print("expanding a node for astar1!")
         children = g.expand_node(node)
         #print("queue children: ", children)
         expansion += 1
@@ -600,9 +559,8 @@ def astar1(root, g):
             child.g = len(child.id.split(".")) - 1
             child.h = hColors(child.dic, child.dicComponent)
             child.f = child.g + child.h
-            #print("child value: ", child.f, "node value: ", node.f)
             if(add_to_open(open_list, child) == True):
-                # Everything is green, add child to open list
+                # If everything was okay, add child to open list
                 open_list.append(child)
                
     
@@ -620,7 +578,7 @@ def astar1(root, g):
     print("optimal: ", optimalPathSorted)
     return [len(optimalPathSorted), expansion]
 
-    
+@timeout()   
 def astar2(root, g):
     open_list = [root]
     closed_list = []
@@ -628,9 +586,7 @@ def astar2(root, g):
     expansion = 0
     while len(open_list) > 0:
         open_list.sort()
-        #print("sorted list: ", [n.f for n in open_list])
         node = open_list.pop(0)
-        
         
         closed_list.append(node)
         pathDict[node.id] = node.history
@@ -640,7 +596,7 @@ def astar2(root, g):
             print("found solution node! ", node.id, node.history)
             break;
             
-        print("expanding a noooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooode!!!")
+        print("expanding a node with astar2!")
         children = g.expand_node(node)
         #print("queue children: ", children)
         expansion += 1
@@ -653,12 +609,9 @@ def astar2(root, g):
             child.g = len(child.id.split(".")) - 1
             child.h = hComponents(child.dic, child.dicComponent)
             child.f = child.g + child.h
-            #print("child value: ", child.f, "node value: ", node.f)
             if(add_to_open(open_list, child) == True):
-                # Everything is green, add child to open list
-                open_list.append(child)
-               
-    
+                # If everything is okay, add child to open list
+                open_list.append(child)          
     
     path = node.id.split(".")
     print(path)
@@ -690,10 +643,10 @@ def bfs(root, g):
             break;
         g.duplicate_list = []
         children = g.expand_node(node)
-        print("expanding a noooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooode!!!")
+        print("expanding a node with bfs!")
         expansion += 1
         if expansion == 1:
-            print("chiiiiiiiiiiiiiiiiiiiiiildren: ", [[child.id, len(child.dic)] for child in children])
+            print("children: ", [[child.id, len(child.dic)] for child in children])
         queue.extend(children)
     
     path = node.id.split(".")
@@ -708,7 +661,6 @@ def bfs(root, g):
     optimalPathSorted = optimalPath[::-1]
     print("optimal: ", optimalPathSorted)
     return [len(optimalPathSorted), expansion]
-
 
 
 # A function to perform a Depth-Limited search 
@@ -735,7 +687,7 @@ def DLS(src,maxDepth, counter, g):
     print("children: ", children)
     counter.iteration += 1
     if counter.iteration == 1:
-            print("chiiiiiiiiiiiiiiiiiiiiiildren: ", [[child.id, len(child.dic)] for child in children])
+            print("children: ", [[child.id, len(child.dic)] for child in children])
     # Recur for all the vertices adjacent to this vertex 
     for child in children:
         child.parent = src
@@ -746,7 +698,7 @@ def DLS(src,maxDepth, counter, g):
             return result
     return 'cutoff' if cutoff_occured else 'Not found'
   
-
+@timeout()
 def iddfs(src, g):
     counter = Counter()
     maxDepth = len(src.dic)
@@ -766,21 +718,15 @@ def iddfs(src, g):
                 "within max depth " + str(depth))
             return result
                 
-
-
+                
 
 
 def main(algorithm, optimization):
-    optimal_moves = [1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5]
+    optimal_moves = [0, 1, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5]
     alg_moves = []
     node_expansions = []
-
     correct = 0
-
     timeList = []
-
-
-
 
     f = open('run_time_%s-%s-PROBLEM22.txt' % (algorithm, optimization), "w")
     f1 = open('node_expansions_%s-%s-PROBLEM22.txt' % (algorithm, optimization), "w")
@@ -788,7 +734,7 @@ def main(algorithm, optimization):
     correct = 0
     for integer in range(22):
         integer += 1
-        problem_file = "problem%s.txt" % (integer)
+        problem_file = "problem%scomp.txt" % (integer)
         integer -= 1
         g = grid(problem_file, optimization)
         print("\n", problem_file)
@@ -800,30 +746,39 @@ def main(algorithm, optimization):
         
         root = Node("0", dic, dicComponent, 0, 0, True)
         
-        start = round(time.time()* 1000)
+        start = round(time.time()* 1000)               
         
-        
-        
-        
-        #algorithm
-        run = eval(algorithm)
-        shortest_length = run(root, g)
-        alg_moves.append(shortest_length[0])
-        node_expansions.append(shortest_length[1])
-        string = str(shortest_length[1]) + "\n"
-        f1.write(string)
-        
-        if optimal_moves[integer] == shortest_length[0]:
-            correct += 1
-        totalTime = round(time.time()* 1000) - start
-        timeList.append(totalTime)
-            #f.write('It took {0:0.1f} milliseconds to solve {file} \n'.format(totalTime, file=problem_file))
-        string = str(totalTime) + "\n"
-        f.write(string)
-        
+        try:
+            #algorithm
+            run = eval(algorithm)
+            shortest_length = run(root, g)
+            alg_moves.append(shortest_length[0])
+            node_expansions.append(shortest_length[1])
+            string = str(shortest_length[1]) + "\n"
+            f1.write(string)
+            
+            if optimal_moves[integer] == shortest_length[0]:
+                correct += 1
+            totalTime = round(time.time()* 1000) - start
+            timeList.append(totalTime)
+            string = str(totalTime) + "\n"
+            f.write(string)
+        except:
+            shortest_length = ["", ""]
+            alg_moves.append(shortest_length[0])
+            node_expansions.append(shortest_length[1])
+            string = str(shortest_length[1]) + "\n"
+            f1.write(string)
+            
+            if optimal_moves[integer] == shortest_length[0]:
+                correct += 1
+            totalTime = 600 * 1000
+            timeList.append(totalTime)
+            string = str(totalTime) + "\n"
+            f.write(string)
+            pass
 
     averageTime = sum(timeList) / len(optimal_moves)
-    #f.write('Average Time for solving all {listLength} problem files is: {average}'.format(listLength=len(optimal_moves), average=averageTime))
     f.close()
     f1.close()
 
@@ -843,10 +798,6 @@ if __name__ == "__main__":
     if len(sys.argv) == 3:
         algorithm = sys.argv[1]
         optimization = sys.argv[2]
-        
         main(algorithm, optimization)
-        
     else:
         print("Usage: python3.6 grid-kami [algorithm] [optimization]")
-
-
